@@ -1,6 +1,6 @@
 {
   "name": "dsh-wechat-ui",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "微信风格皮肤 for DeepSeek Harness Web：微信绿主色、#EDEDED 聊天底、经典 #95EC69 发送气泡、小圆角扁平界面、明暗双主题。纯 CSS 令牌覆盖，零运行时依赖，不碰会话数据。inspired-by，非腾讯官方。",
   "type": "module",
   "main": "lib/index.mjs",
@@ -32,6 +32,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node test/run-all.mjs",
+    "preview": "node scripts/render-preview.mjs",
     "prepublishOnly": "node scripts/build.mjs && node test/run-all.mjs"
   },
   "keywords": [

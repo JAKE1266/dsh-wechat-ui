@@ -142,7 +142,7 @@ function makeDomStub() {
   assert.equal(head.children.length, 1, '第一次安装应插入一个 style')
   assert.equal(head.children[0].dataset.plugin, 'dsh-wechat-ui')
   assert.equal(head.children[0].dataset.pluginCss, 'dsh-wechat-ui/skin.css')
-  assert.equal(rootAttrs.get('data-dsh-wechat-skin'), '1.1.0')
+  assert.equal(rootAttrs.get('data-dsh-wechat-skin'), '1.2.0')
   const first = head.children[0]
   const dispose2 = mod.installSkin(doc)
   assert.equal(head.children.length, 1, '重复安装不得重复插入 style')

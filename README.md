@@ -7,6 +7,14 @@
 
 > English docs: [README.en.md](./README.en.md) · 更新记录：[CHANGELOG.md](./CHANGELOG.md)
 
+## 预览
+
+亮色 / 暗色（真实渲染截图，`node scripts/render-preview.mjs` 可复现）：
+
+| Light | Dark |
+|---|---|
+| ![亮色预览](./assets/preview.png) | ![暗色预览](./assets/preview-dark.png) |
+
 - **微信绿** `#07C160` 主色（发送按钮、强调、焦点环）
 - **浅灰聊天底** `#EDEDED` + 白色侧栏/卡片
 - **经典发送气泡** `#95EC69`（微信绿气泡、深色文字）

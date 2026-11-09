@@ -27,7 +27,7 @@
  */
 
 /** 皮肤版本：改动令牌口径时递增，便于排查浏览器里挂着的旧样式。 */
-export const SKIN_VERSION = '1.1.0'
+export const SKIN_VERSION = '1.2.0'
 
 /** 标记属性，注入到 <html> 上，便于在 DevTools 里确认皮肤已激活。 */
 export const SKIN_ATTRIBUTE = 'data-dsh-wechat-skin'
@@ -640,18 +640,46 @@ export const CHAT_LAYOUT_CSS = `
 
 /* 用户气泡：宿主已右对齐，这里补微信绿气泡的深色文字与小圆角。 */
 [data-conversation-scroll] [data-message-bubble]{
+  position:relative;
   background:var(--wx-user-bubble)!important;
   color:var(--wx-user-bubble-label)!important;
   border-radius:var(--dsw-radius-lg)!important;
 }
 
+/* 微信式气泡小尾巴：用户气泡朝右、AI 气泡朝左的旋转小方块。 */
+[data-conversation-scroll] [data-message-bubble]::after{
+  content:"";
+  position:absolute;
+  top:12px;
+  right:-4px;
+  width:9px;
+  height:9px;
+  background:var(--wx-user-bubble);
+  border-radius:2px;
+  transform:rotate(45deg);
+}
+
 /* AI 回复：从全宽文本流变成左对齐的白色气泡（暗色跟随层色）。
    只命中 response 分组，reasoning/过程行保持原样。 */
 [data-conversation-scroll] [data-chat-group-part="response"] [data-slot="conversation.chat.node"]>div{
+  position:relative;
   background:var(--dsw-alias-bg-layer-1)!important;
   border:1px solid var(--dsw-alias-border-l1)!important;
   border-radius:var(--dsw-radius-lg)!important;
   padding:10px 14px!important;
+}
+[data-conversation-scroll] [data-chat-group-part="response"] [data-slot="conversation.chat.node"]>div::before{
+  content:"";
+  position:absolute;
+  top:12px;
+  left:-5px;
+  width:9px;
+  height:9px;
+  background:var(--dsw-alias-bg-layer-1);
+  border-left:1px solid var(--dsw-alias-border-l1);
+  border-bottom:1px solid var(--dsw-alias-border-l1);
+  border-radius:2px;
+  transform:rotate(45deg);
 }
 
 /* 气泡内的代码块/引用块不再套大圆角卡片，避免气泡里叠气泡。 */

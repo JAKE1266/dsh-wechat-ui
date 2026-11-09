@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 — 2026-11-09
+
+- 微信式气泡小尾巴：用户气泡朝右、AI 气泡朝左的旋转小方块（纯 CSS）
+- 新增 `scripts/render-preview.mjs`：按宿主真实 DOM 锚点生成明/暗预览页
+- 浏览器实测验证亮/暗渲染，截图收录为 `assets/preview.png` / `preview-dark.png`
+- README 增加预览图展示
+
 ## 1.1.0 — 2026-11-08
 
 - 新增微信对话布局层（`CHAT_LAYOUT_CSS`）：
