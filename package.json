@@ -1,0 +1,82 @@
+{
+  "name": "dsh-wechat-ui",
+  "version": "1.0.0",
+  "description": "微信风格皮肤 for DeepSeek Harness Web：微信绿主色、#EDEDED 聊天底、经典 #95EC69 发送气泡、小圆角扁平界面、明暗双主题。纯 CSS 令牌覆盖，零运行时依赖，不碰会话数据。inspired-by，非腾讯官方。",
+  "type": "module",
+  "main": "lib/index.mjs",
+  "icon": "./assets/icon.svg",
+  "exports": {
+    ".": {
+      "default": "./lib/index.mjs"
+    },
+    "./client": {
+      "default": "./client/client.js"
+    },
+    "./tokens": {
+      "default": "./src/tokens.mjs"
+    },
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "lib",
+    "client",
+    "src",
+    "assets",
+    "cordis.patch.yml",
+    "LICENSE",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node test/run-all.mjs",
+    "prepublishOnly": "node scripts/build.mjs && node test/run-all.mjs"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "dsh-plugins",
+    "wechat",
+    "微信",
+    "theme",
+    "skin",
+    "css-variables"
+  ],
+  "license": "MIT",
+  "author": "JAKE1266 <3051975611@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JAKE1266/dsh-wechat-ui.git"
+  },
+  "homepage": "https://github.com/JAKE1266/dsh-wechat-ui#readme",
+  "bugs": {
+    "url": "https://github.com/JAKE1266/dsh-wechat-ui/issues"
+  },
+  "engines": {
+    "node": ">=20",
+    "dsh": ">=0.2.0-rc.2 <0.3.0-0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": []
+    },
+    "catalog": {
+      "category": "theme",
+      "summary": {
+        "zh": "微信风格皮肤：微信绿主色、浅灰聊天底、经典绿色发送气泡、小圆角扁平界面，明暗双主题，纯 CSS 令牌覆盖。",
+        "en": "A WeChat-inspired skin for DSH Web: WeChat green accent, light-gray chat surface, classic green send bubbles, flat small-radius UI, light/dark themes, pure CSS token overrides."
+      },
+      "capabilities": []
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

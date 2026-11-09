@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Build client bundle
+        run: node scripts/build.mjs
+      - name: Verify build is reproducible
+        run: git diff --exit-code -- client/client.js
+      - name: Run zero-dependency test suite
+        run: node test/run-all.mjs
