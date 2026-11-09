@@ -11,6 +11,9 @@ A **WeChat-inspired skin** for the DeepSeek Harness (DSH) Web UI.
 - **Classic send bubble** `#95EC69` with dark text
 - **WeChat-style conversation layout**: your messages right-aligned in green bubbles with a green "我" avatar; assistant replies left-aligned in white bubbles with a brand-colored "D" avatar (pure CSS pseudo-elements — no DOM injection, no network requests)
 - Flat, small-radius (4–8px) surfaces; light **and** dark themes (dark follows WeChat dark mode: `#111111` base, deep-green bubbles)
+- **Two platform variants**, auto-selected via the host's `<html data-platform>`:
+  - **Windows**: classic `#EDEDED` chat surface, 4px flat corners, YaHei font, no elevation
+  - **macOS**: soft `#F0F0F2` gray (`#1C1C1E` in dark), 10px corners, PingFang font, vibrancy menus and soft shadows
 - Pure CSS design-token overrides: zero runtime dependencies, no component replacement, never touches conversation data; uninstall/disable restores the stock UI completely
 
 ## Install

@@ -39,7 +39,7 @@ window.__ModuleLoader__.load({
 		 */
 
 		/** 皮肤版本：改动令牌口径时递增，便于排查浏览器里挂着的旧样式。 */
-		const SKIN_VERSION = '1.2.0'
+		const SKIN_VERSION = '1.3.0'
 
 		/** 标记属性，注入到 <html> 上，便于在 DevTools 里确认皮肤已激活。 */
 		const SKIN_ATTRIBUTE = 'data-dsh-wechat-skin'
@@ -513,6 +513,81 @@ window.__ModuleLoader__.load({
 		})
 
 		/**
+		 * 平台变体：微信 Windows 版 vs 微信 macOS 版观感。
+		 *
+		 * 宿主在 <html data-platform="win32|darwin"> 上暴露平台。基础 LIGHT/DARK
+		 * 是共享色板；下面四张表只覆盖「平台差异键」。属性必须挂在 :root 伪类自身
+		 * （html 是根，`:root html` 这类后代写法永远不匹配）。选择器特异性 (0,4,1)，
+		 * 亮色带 :not([data-ds-dark-theme])、暗色带 [data-ds-dark-theme]，互斥且
+		 * 确定性压过基础块 (0,2,1)/(0,3,1)，不依赖加载顺序。
+		 *
+		 * Windows 版微信：直角扁平、4px 小圆角、雅黑字体、无浮起阴影。
+		 * macOS 版微信：柔和浅灰、10px 圆角、苹方字体、毛玻璃浮层、软阴影。
+		 * 四张表的键集合必须一致（test/run-all.mjs 校验）。
+		 */
+		const WIN_LIGHT = Object.freeze({
+		  '--dsw-alias-bg-base': '#EDEDED',
+		  '--dsw-alias-bg-layer-3': '#F7F7F7',
+		  '--dsw-radius-lg': '4px',
+		  '--dsw-radius-xl': '4px',
+		  '--dsw-radius-panel': '6px',
+		  '--dsw-shadow-lv2': '0 2px 8px 0 rgba(0, 0, 0, 0.08)',
+		  '--dsw-font-family':
+		    '"Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "HarmonyOS Sans SC", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+		  '--dsw-menu-backdrop-filter': 'none',
+		  '--wx-composer-radius': '4px',
+		  '--wx-composer-shadow': 'none',
+		})
+
+		const WIN_DARK = Object.freeze({
+		  '--dsw-alias-bg-base': '#111111',
+		  '--dsw-alias-bg-layer-3': '#232323',
+		  '--dsw-radius-lg': '4px',
+		  '--dsw-radius-xl': '4px',
+		  '--dsw-radius-panel': '6px',
+		  '--dsw-shadow-lv2': '0 2px 8px 0 rgba(0, 0, 0, 0.32)',
+		  '--dsw-font-family':
+		    '"Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "HarmonyOS Sans SC", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+		  '--dsw-menu-backdrop-filter': 'none',
+		  '--wx-composer-radius': '4px',
+		  '--wx-composer-shadow': 'none',
+		})
+
+		const MAC_LIGHT = Object.freeze({
+		  '--dsw-alias-bg-base': '#F0F0F2',
+		  '--dsw-alias-bg-layer-3': '#F5F5F7',
+		  '--dsw-radius-lg': '10px',
+		  '--dsw-radius-xl': '12px',
+		  '--dsw-radius-panel': '12px',
+		  '--dsw-shadow-lv2': '0 4px 16px 0 rgba(0, 0, 0, 0.10), 0 1px 3px 0 rgba(0, 0, 0, 0.06)',
+		  '--dsw-font-family':
+		    '"PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei UI", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+		  '--dsw-menu-backdrop-filter': 'blur(24px) saturate(1.4)',
+		  '--wx-composer-radius': '10px',
+		  '--wx-composer-shadow': '0 2px 10px 0 rgba(0, 0, 0, 0.06)',
+		})
+
+		const MAC_DARK = Object.freeze({
+		  '--dsw-alias-bg-base': '#1C1C1E',
+		  '--dsw-alias-bg-layer-3': '#2C2C2E',
+		  '--dsw-radius-lg': '10px',
+		  '--dsw-radius-xl': '12px',
+		  '--dsw-radius-panel': '12px',
+		  '--dsw-shadow-lv2': '0 4px 16px 0 rgba(0, 0, 0, 0.40)',
+		  '--dsw-font-family':
+		    '"PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei UI", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+		  '--dsw-menu-backdrop-filter': 'blur(24px) saturate(1.4)',
+		  '--wx-composer-radius': '10px',
+		  '--wx-composer-shadow': '0 2px 10px 0 rgba(0, 0, 0, 0.30)',
+		})
+
+		/** 平台亮色选择器：特异性 (0,4,1)，与暗色互斥。 */
+		const WIN_LIGHT_SELECTOR = ':root[data-platform="win32"]:root body:not([data-ds-dark-theme])'
+		const WIN_DARK_SELECTOR = ':root[data-platform="win32"]:root body[data-ds-dark-theme]'
+		const MAC_LIGHT_SELECTOR = ':root[data-platform="darwin"]:root body:not([data-ds-dark-theme])'
+		const MAC_DARK_SELECTOR = ':root[data-platform="darwin"]:root body[data-ds-dark-theme]'
+
+		/**
 		 * 令牌之外的少量结构修正。
 		 *
 		 * 纪律：皮肤层**不针对 DSH 的 CSS Module 哈希类名写规则**。这里只做与类名
@@ -719,15 +794,19 @@ window.__ModuleLoader__.load({
 		    renderTokenBlock(':root:root body', STRUCTURAL),
 		  ].join('')
 		  return [
-		    `/* dsh-wechat-ui — 微信风格皮肤 v${SKIN_VERSION} · inspired-by, 非官方 */`,
+		    `/* dsh-wechat-ui — 微信风格皮肤 v${SKIN_VERSION} · inspired-by, 非官方 · Windows/macOS 双平台变体 */`,
 		    renderTokenBlock(LIGHT_SELECTOR, LIGHT),
 		    renderTokenBlock(DARK_SELECTOR, DARK),
 		    structural,
+		    renderTokenBlock(WIN_LIGHT_SELECTOR, WIN_LIGHT),
+		    renderTokenBlock(WIN_DARK_SELECTOR, WIN_DARK),
+		    renderTokenBlock(MAC_LIGHT_SELECTOR, MAC_LIGHT),
+		    renderTokenBlock(MAC_DARK_SELECTOR, MAC_DARK),
 		    STRUCTURE_CSS,
 		    CHAT_LAYOUT_CSS,
 		  ].join('\n')
 		}
-		return { SKIN_VERSION, SKIN_ATTRIBUTE, STYLE_TAG_ID, LIGHT_SELECTOR, DARK_SELECTOR, STRUCTURAL, LIGHT, DARK, STRUCTURE_CSS, CHAT_LAYOUT_CSS, renderTokenBlock, renderSkinCss };
+		return { SKIN_VERSION, SKIN_ATTRIBUTE, STYLE_TAG_ID, LIGHT_SELECTOR, DARK_SELECTOR, STRUCTURAL, LIGHT, DARK, WIN_LIGHT, WIN_DARK, MAC_LIGHT, MAC_DARK, WIN_LIGHT_SELECTOR, WIN_DARK_SELECTOR, MAC_LIGHT_SELECTOR, MAC_DARK_SELECTOR, STRUCTURE_CSS, CHAT_LAYOUT_CSS, renderTokenBlock, renderSkinCss };
 		})();
 
 		/**

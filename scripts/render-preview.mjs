@@ -71,12 +71,12 @@ const conversation = `
   </div>
 </div>`
 
-function page(dark) {
+function page(dark, platform) {
   return `<!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-platform="${platform}">
 <head>
 <meta charset="utf-8">
-<title>dsh-wechat-ui preview v${SKIN_VERSION} (${dark ? 'dark' : 'light'})</title>
+<title>dsh-wechat-ui preview v${SKIN_VERSION} (${platform} ${dark ? 'dark' : 'light'})</title>
 <style>
 /* ── 模拟宿主基线（非皮肤部分）：仅搭骨架 ── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -108,8 +108,13 @@ ${conversation}
 
 const outDir = join(root, 'test', '_preview')
 mkdirSync(outDir, { recursive: true })
-for (const [name, dark] of [['index.html', false], ['dark.html', true]]) {
+for (const [name, dark, platform] of [
+  ['index.html', false, 'win32'],
+  ['dark.html', true, 'win32'],
+  ['mac.html', false, 'darwin'],
+  ['mac-dark.html', true, 'darwin'],
+]) {
   const outFile = join(outDir, name)
-  writeFileSync(outFile, page(dark), 'utf8')
+  writeFileSync(outFile, page(dark, platform), 'utf8')
   console.log(`preview: wrote ${outFile}`)
 }

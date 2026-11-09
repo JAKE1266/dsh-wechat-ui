@@ -72,7 +72,7 @@ const css = (() => {
   let captured = null
   const instrumented = clientCode.replace(
     'return module.exports;',
-    'module.exports.__renderSkinCss = __TOKENS__.renderSkinCss; module.exports.__tokens = { LIGHT: __TOKENS__.LIGHT, DARK: __TOKENS__.DARK, STRUCTURAL: __TOKENS__.STRUCTURAL }; return module.exports;',
+    'module.exports.__renderSkinCss = __TOKENS__.renderSkinCss; module.exports.__tokens = { LIGHT: __TOKENS__.LIGHT, DARK: __TOKENS__.DARK, STRUCTURAL: __TOKENS__.STRUCTURAL, WIN_LIGHT: __TOKENS__.WIN_LIGHT, WIN_DARK: __TOKENS__.WIN_DARK, MAC_LIGHT: __TOKENS__.MAC_LIGHT, MAC_DARK: __TOKENS__.MAC_DARK }; return module.exports;',
   )
   const sb = { ...sandbox, window: { __ModuleLoader__: { load: (r) => { captured = r } } } }
   vm.createContext(sb)
@@ -109,7 +109,7 @@ assert.ok(css.tokens.LIGHT['--dsw-alias-brand-primary'].startsWith('#'), '品牌
 ok(`亮色品牌主色 = ${css.tokens.LIGHT['--dsw-alias-brand-primary']}，暗色 = ${css.tokens.DARK['--dsw-alias-brand-primary']}`)
 
 // 所有值都必须是合法的 CSS 声明值（不为空、不含换行/分号注入）
-for (const [paletteName, palette] of [['LIGHT', css.tokens.LIGHT], ['DARK', css.tokens.DARK], ['STRUCTURAL', css.tokens.STRUCTURAL]]) {
+for (const [paletteName, palette] of [['LIGHT', css.tokens.LIGHT], ['DARK', css.tokens.DARK], ['STRUCTURAL', css.tokens.STRUCTURAL], ['WIN_LIGHT', css.tokens.WIN_LIGHT], ['WIN_DARK', css.tokens.WIN_DARK], ['MAC_LIGHT', css.tokens.MAC_LIGHT], ['MAC_DARK', css.tokens.MAC_DARK]]) {
   for (const [key, value] of Object.entries(palette)) {
     assert.match(key, /^--[a-z0-9-]+$/, `${paletteName} 非法变量名 ${key}`)
     assert.equal(typeof value, 'string', `${paletteName}.${key} 必须是字符串`)
@@ -117,6 +117,16 @@ for (const [paletteName, palette] of [['LIGHT', css.tokens.LIGHT], ['DARK', css.
   }
 }
 ok('全部令牌名合法、值无注入风险')
+
+// 平台变体：Windows / macOS 四张表键集一致，选择器互斥且特异性足够
+{
+  const t = css.tokens
+  const keySets = ['WIN_LIGHT', 'WIN_DARK', 'MAC_LIGHT', 'MAC_DARK'].map((n) => Object.keys(t[n]).sort().join('\n'))
+  assert.ok(keySets.every((k) => k === keySets[0]), '平台变体键集合不一致')
+  assert.ok(css.text.includes(':root[data-platform="win32"]:root body:not([data-ds-dark-theme])'), '缺少 Windows 亮色块')
+  assert.ok(css.text.includes(':root[data-platform="darwin"]:root body[data-ds-dark-theme]'), '缺少 macOS 暗色块')
+  ok(`Windows/macOS 平台变体键集一致（${Object.keys(t.WIN_LIGHT).length} 个差异键 × 4 表）`)
+}
 
 // ── 5. 样式注入幂等 + 卸载回收 ─────────────────────────────────────────────
 function makeDomStub() {
@@ -142,7 +152,7 @@ function makeDomStub() {
   assert.equal(head.children.length, 1, '第一次安装应插入一个 style')
   assert.equal(head.children[0].dataset.plugin, 'dsh-wechat-ui')
   assert.equal(head.children[0].dataset.pluginCss, 'dsh-wechat-ui/skin.css')
-  assert.equal(rootAttrs.get('data-dsh-wechat-skin'), '1.2.0')
+  assert.equal(rootAttrs.get('data-dsh-wechat-skin'), '1.3.0')
   const first = head.children[0]
   const dispose2 = mod.installSkin(doc)
   assert.equal(head.children.length, 1, '重复安装不得重复插入 style')

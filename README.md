@@ -9,11 +9,16 @@
 
 ## 预览
 
-亮色 / 暗色（真实渲染截图，`node scripts/render-preview.mjs` 可复现）：
+按宿主平台自动切换 **Windows 版 / macOS 版** 微信外观（`<html data-platform>`），
+每套各含明暗主题。真实渲染截图，`node scripts/render-preview.mjs` 可复现：
 
-| Light | Dark |
-|---|---|
-| ![亮色预览](./assets/preview.png) | ![暗色预览](./assets/preview-dark.png) |
+| | Light | Dark |
+|---|---|---|
+| **Windows** | ![Windows 亮色](./assets/preview.png) | ![Windows 暗色](./assets/preview-dark.png) |
+| **macOS** | ![macOS 亮色](./assets/preview-mac.png) | ![macOS 暗色](./assets/preview-mac-dark.png) |
+
+- **Windows 版**：经典 `#EDEDED` 聊天底、4px 直角扁平、雅黑字体、无浮起阴影
+- **macOS 版**：柔和浅灰 `#F0F0F2`（暗色 `#1C1C1E`）、10px 圆角、苹方字体、毛玻璃浮层与软阴影
 
 - **微信绿** `#07C160` 主色（发送按钮、强调、焦点环）
 - **浅灰聊天底** `#EDEDED` + 白色侧栏/卡片
